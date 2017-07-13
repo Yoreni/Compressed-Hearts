@@ -1,0 +1,7 @@
+name: CompressedHearts
+version: 1.4.1
+main: yoreni.CH.main.Main
+author: Yoreni
+softdepend: []
+commands:
+  CompressedHearts:

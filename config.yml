@@ -1,0 +1,4 @@
+HPmsg: '&4HP %hp%/%maxhp%'
+AbsorptionHPmsg: '&4HP %hp%/%maxhp%  &e+%ab%'
+DefaultDisplay: HotBar
+DefaultScaled: true

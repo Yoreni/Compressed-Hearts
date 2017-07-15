@@ -36,11 +36,23 @@ public class Main extends JavaPlugin implements Listener
 {
 	DecimalFormat comma = new DecimalFormat("#,###");
 	BossBar hp = Bukkit.createBossBar("null", BarColor.GREEN, BarStyle.SOLID);
-	private File configFile,dataFile;
-	private FileConfiguration config,data;
 
 	public void onEnable()
 	{
+		Collection<? extends Player> players = Bukkit.getServer().getOnlinePlayers();
+		for(Player player : players)
+		{		
+			if(getConfig().getString("Data." + player.getUniqueId().toString() + ".Display").equals("BossBar"))
+			{
+				EntityLiving eplayer = ((CraftPlayer)player).getHandle();
+				if (eplayer.getAbsorptionHearts() > 0) hp.setTitle((ChatColor.translateAlternateColorCodes('&',getConfig().getString("AbsorptionHPmsg"))).replace("%hp%",((int) player.getHealth())+ "").replace("%maxhp%",(int) player.getMaxHealth() + "").replace("%ab%",(int) eplayer.getAbsorptionHearts() + ""));
+				else hp.setTitle((ChatColor.translateAlternateColorCodes('&',getConfig().getString("HPmsg"))).replace("%hp%",((int) player.getHealth())+ "").replace("%maxhp%",(int) player.getMaxHealth() + "").replace("%ab%",(int) eplayer.getAbsorptionHearts() + ""));
+				hp.setProgress(player.getHealth() / player.getMaxHealth());
+				hp.addPlayer(player);
+				hp.show();
+			}
+		}
+
 		createConfig();
 		Bukkit.getPluginManager().registerEvents(this, this);
 		getConfig().options().copyDefaults(true);
@@ -58,7 +70,7 @@ public class Main extends JavaPlugin implements Listener
 
 	public void onDisable()
 	{
-
+		hp.removeAll();
 	}
 
 	public void sendActionBar(Player player, String msg) 
@@ -67,10 +79,6 @@ public class Main extends JavaPlugin implements Listener
 		//PacketPlayOutChat two = new PacketPlayOutChat(one);
 		PacketPlayOutChat two = new PacketPlayOutChat(one, ChatMessageType.GAME_INFO);
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(two);
-	}
-
-	public FileConfiguration getData() {
-		return this.data;
 	}
 
 	private void createConfig() 

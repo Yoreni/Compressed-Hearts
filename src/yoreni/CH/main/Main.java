@@ -22,6 +22,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -79,6 +80,13 @@ public class Main extends JavaPlugin implements Listener
 		//PacketPlayOutChat two = new PacketPlayOutChat(one);
 		PacketPlayOutChat two = new PacketPlayOutChat(one, ChatMessageType.GAME_INFO);
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(two);
+	}
+	
+	@EventHandler
+	public void onWorldChange(PlayerChangedWorldEvent event)
+	{
+		Player player = event.getPlayer();
+		if(getConfig().getBoolean("Data." + player.getUniqueId().toString() + ".Compressed")) player.setHealthScale(20);
 	}
 
 	private void createConfig() 

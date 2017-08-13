@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>yoreni</groupId>
-    <artifactId>CH</artifactId>
+    <artifactId>CompressedHearts</artifactId>
     <version>1.4.3</version>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

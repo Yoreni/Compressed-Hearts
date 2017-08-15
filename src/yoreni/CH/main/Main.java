@@ -24,6 +24,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.minecraft.server.v1_12_R1.ChatMessageType;
@@ -113,6 +114,22 @@ public class Main extends JavaPlugin implements Listener
 			Exception.printStackTrace();
 		}
 	}
+	
+	@EventHandler
+	public void playerMove(PlayerMoveEvent event) 
+	{
+		Player player = event.getPlayer();
+		EntityLiving eplayer = ((CraftPlayer)player).getHandle();
+		if(getConfig().getString("Data." + player.getUniqueId().toString() + ".Display").equals("BossBar"))
+		{
+			//BossBar hp = Bukkit.createBossBar(null, BarColor.GREEN, BarStyle.SOLID);
+			if (eplayer.getAbsorptionHearts() > 0) hp.setTitle((ChatColor.translateAlternateColorCodes('&',getConfig().getString("AbsorptionHPmsg"))).replace("%hp%",((int) player.getHealth())+ "").replace("%maxhp%",(int) player.getMaxHealth() + "").replace("%ab%",(int) eplayer.getAbsorptionHearts() + ""));
+			else hp.setTitle((ChatColor.translateAlternateColorCodes('&',getConfig().getString("HPmsg"))).replace("%hp%",((int) player.getHealth())+ "").replace("%maxhp%",(int) player.getMaxHealth() + "").replace("%ab%",(int) eplayer.getAbsorptionHearts() + ""));
+			hp.setProgress(player.getHealth() / player.getMaxHealth());
+			hp.addPlayer(player);
+			hp.show();
+		}
+	}
 
 	@EventHandler
 	public void playerJoin(PlayerJoinEvent event) 
@@ -165,7 +182,6 @@ public class Main extends JavaPlugin implements Listener
 			{
 				if(((int) player.getHealth() - (int) event.getDamage()) > 0) hp.setTitle((ChatColor.translateAlternateColorCodes('&',getConfig().getString("HPmsg"))).replace("%hp%",(comma.format((int) player.getHealth() - (int) event.getDamage()))+ "").replace("%maxhp%",comma.format((int) player.getMaxHealth()) + ""));		
 			}
-			hp.setProgress((player.getHealth() - event.getDamage()) / player.getMaxHealth());
 			hp.addPlayer(player);
 			hp.show();
 		}
